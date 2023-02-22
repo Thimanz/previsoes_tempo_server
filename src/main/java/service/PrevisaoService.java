@@ -31,7 +31,19 @@ public class PrevisaoService {
                 .build();
         var res = client.send(req, BodyHandlers.ofString());
         JSONObject raiz = new JSONObject(res.body());
-        return raiz;
+        JSONArray items = raiz.getJSONArray("items");
+        JSONObject hJSON = new JSONObject();
+        JSONArray hItems = new JSONArray();
+        hJSON.put("items", hItems);
+        for (int i = 0; i < items.length(); i++) {
+            String cidade = items.getJSONObject(i).getString("cidade");
+            String pais = items.getJSONObject(i).getString("pais");
+            String data = items.getJSONObject(i).getString("data_pesquisa");
+            JSONObject item = new JSONObject();
+            item.put("cidade", cidade).put("pais", pais).put("data", data);
+            hItems.put(item);
+        }
+        return hJSON;
     }
 
     public List<Previsao> obterPrevisoesWheaterMap(String url, String appid, String units, String cnt, String cidade)
